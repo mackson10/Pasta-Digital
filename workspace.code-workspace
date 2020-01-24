@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    }
+  ],
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+  },
+  "settings": {
+    "files.eol": "\r\n",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "prettier.printWidth": 80,
+    "eslint.validate": ["javascript"],
+    "window.zoomLevel": 0.1,
+    "prettier.endOfLine": "crlf",
+    "git.ignoreLimitWarning": true
+  }
+}
