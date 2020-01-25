@@ -12,8 +12,6 @@ authRoute.post("/", async function(req, res, next) {
 
   const user = await User.findOne({ username }).select("+passwordHash");
   if (!user || !(await user.authenticate(password))) {
-    console.log(await user.authenticate(password));
-
     return next({ status: 404, message: "Verifique suas credenciais" });
   }
 
@@ -22,7 +20,7 @@ authRoute.post("/", async function(req, res, next) {
   const tokenPayload = { user: { _id, name } };
   try {
     const token = await jwt.sign(tokenPayload);
-    res.send({ token });
+    return res.send({ token });
   } catch (e) {
     console.log("Erro ao criar token assinado", e);
     return next({ status: 500 });
@@ -44,7 +42,7 @@ authRoute.post("/register", async function(req, res, next) {
   try {
     const user = await User.create({ username, name, password });
     user.passwordHash = undefined;
-    res.send(user);
+    return res.send(user);
   } catch (e) {
     console.log("Erro ao criar usuário", e);
     return next({ status: 500 });
@@ -52,7 +50,7 @@ authRoute.post("/register", async function(req, res, next) {
 });
 
 authRoute.get("/logged", authMiddleware, async function(req, res, next) {
-  res.send(res.locals.user);
+  return res.send(res.locals.user);
 });
 
 module.exports = authRoute;
