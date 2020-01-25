@@ -1,8 +1,16 @@
 {
   "folders": [
     {
-      "name": "root",
+      "name": "Root",
       "path": "."
+    },
+    {
+      "name": "Backend",
+      "path": "./back"
+    },
+    {
+      "name": "Frontend",
+      "path": "./front"
     }
   ],
   "extensions": {
