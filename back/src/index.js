@@ -1,16 +1,15 @@
 const http = require("http");
 const mongoose = require("./mongoose");
 const config = require("./config");
+const app = require("./server");
 
 initServer();
 
 async function initServer() {
   if (await setupServer()) {
-    http
-      .createServer()
-      .listen(config.port, () =>
-        console.log("Servidor ativo na porta " + config.port)
-      );
+    http.createServer(app).listen(config.port, function() {
+      console.log("Servidor ativo na porta " + config.port);
+    });
   } else {
     console.log("Não foi possível iniciar ao servidor");
   }
