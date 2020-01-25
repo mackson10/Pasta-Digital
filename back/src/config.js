@@ -3,7 +3,8 @@ require("dotenv").config();
 module.exports = {
   port: getFromEnvironment("PORT"),
   mongoConnString: getFromEnvironment("MONGO_CONN_STR"),
-  jwtPrivateKey: getFromEnvironment("JWT_PRIVATE_KEY")
+  jwtPrivateKey: getFromEnvironment("JWT_PRIVATE_KEY"),
+  pwdHashSecret: getFromEnvironment("PWD_HASH_SECRET")
 };
 
 function getFromEnvironment(varName) {
