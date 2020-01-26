@@ -40,7 +40,12 @@ authRoute.post("/register", async function(req, res, next) {
     return next({ status: 400, message: "Este usuário já existe" });
 
   try {
-    const user = await User.create({ username, name, password });
+    const user = await User.create({
+      username,
+      name,
+      password,
+      folders: [{ name: "Padrão" }]
+    });
     user.passwordHash = undefined;
     return res.send(user);
   } catch (e) {

@@ -1,7 +1,7 @@
 const express = require("express");
 const Document = require("../application/models/Document");
 const User = require("../application/models/User");
-// const fileUpload = require("express-fileupload");
+const pdfParse = require("pdf-parse");
 
 const docsRoute = express.Router();
 
@@ -9,8 +9,12 @@ docsRoute.get("/:id", async function(req, res, next) {
   const { user } = res.locals;
   const { id } = req.params;
 
-  const doc = await Document.findById(id);
-
+  let doc;
+  try {
+    doc = await Document.findById(id).select("+content");
+  } catch (e) {
+    next({ status: 500 });
+  }
   if (!doc || !user.folders.id(doc.folder))
     return next({ status: 404, message: "Documento não encontrado" });
 
@@ -20,6 +24,8 @@ docsRoute.get("/:id", async function(req, res, next) {
 docsRoute.post("/", async function(req, res, next) {
   const { user: requestUser } = res.locals;
   const { title, folderId } = req.body;
+
+  if (typeof title !== "string" || !folderId) return next({ status: 400 });
 
   const user = await User.findById(requestUser.id).select("+folders.items");
   const folder = user.folders.id(folderId);
@@ -44,6 +50,38 @@ docsRoute.put("/:id", async function(req, res, next) {
 
   doc.content = content;
   await doc.save();
+  delete doc.content;
+  return res.send(doc); //
+});
+
+docsRoute.put("/:id/extract", async function(req, res, next) {
+  const { user } = res.locals;
+  const { id } = req.params;
+  const { files } = req;
+
+  if (!files || !files[0]) return next({ status: 400 });
+  const file = files[0];
+
+  const doc = await Document.findById(id).select("+content");
+  if (!doc) return next({ status: 404, message: "Documento não encontrado" });
+
+  const folder = user.folders.id(doc.folder);
+  if (!folder) return next({ status: 403, message: "Operação não permitida" });
+
+  let newContent = "";
+  if (file.mimetype === "text/plain") newContent = file.data.toString();
+  else if (file.mimetype === "application/pdf") {
+    try {
+      newContent = (await pdfParse(file.data)).text;
+    } catch (e) {
+      return next({ status: 400, message: "PDF inválido" });
+    }
+  } else return next({ status: 400 });
+
+  doc.content += newContent;
+
+  await doc.save();
+  delete doc.content;
   return res.send(doc); //
 });
 
