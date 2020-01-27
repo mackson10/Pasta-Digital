@@ -30,13 +30,22 @@ function App() {
     try {
       const { data } = await api.get("/auth/logged");
       setUser(data);
-    } catch (e) {
-      setError(e.response.data.error || "Error inesperado, tente novamente");
-    }
+    } catch (e) {}
     setLoading(false);
   }, []);
 
   useEffect(() => {
+    api.interceptors.response.use(
+      res => res,
+      err => {
+        if (err.response.status === 401) {
+          localStorage.token = undefined;
+          setUser(null);
+          setError(err.response.data && err.response.data.error);
+        }
+        return Promise.reject(err);
+      }
+    );
     fetchUser();
   }, [fetchUser]);
 

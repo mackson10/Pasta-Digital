@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 
 const errorMiddleware = require("./middlewares/error");
 const notFoundMiddleware = require("./middlewares/notFound");
@@ -22,6 +23,7 @@ rootRouter.use("/auth", authRoute);
 rootRouter.use("/folders", authMiddleware, foldersRoute);
 rootRouter.use("/documents", authMiddleware, documentsRoute);
 
+app.use(cookieParser());
 app.use(cors());
 app.use(fileUpload());
 app.use(express.json());

@@ -16,24 +16,10 @@ authRoute.post("/", async function(req, res, next) {
   }
 
   const { _id, name } = user;
-  const headerTokenPayload = { user: { _id, name }, headerFragment: true };
-  const cookieTokenPayload = { user: { _id, name }, cookieFragment: true };
-  const expiresIn = 60 * 60 * 24 * 7;
-
+  const tokenPayload = { user: { _id, name } };
   try {
-    const headerToken = await jwt.sign(headerTokenPayload, {
-      expiresIn
-    }); // uma semana
-    const cookieToken = await jwt.sign(cookieTokenPayload, { expiresIn });
-
-    // autenticação com 2 chaves
-    return res
-      .cookie("cookieToken", cookieToken, {
-        httpOnly: true,
-        // secure: true, https
-        maxAge: expiresIn * 1000
-      })
-      .send({ token: headerToken });
+    const token = await jwt.sign(tokenPayload);
+    return res.send({ token });
   } catch (e) {
     console.log("Erro ao criar token assinado", e);
     return next({ status: 500 });

@@ -33,7 +33,7 @@ export default function NewFolderDialog({ handleClose, folders }) {
       setUser(u => ({ ...u, folders: [...folders, newFolder] }));
       handleClose();
     } catch (e) {
-      setError(e.response.data.error || "Error inesperado, tente novamente");
+      setError(e.response.data.error || "tente novamente");
     }
     setLoading(false);
   };

@@ -45,7 +45,7 @@ export default function CreateDialog({ handleClose, folder, docs, setDocs }) {
       setDocs(s => [...s, newDoc]);
       handleClose(newDoc);
     } catch (e) {
-      setError(e.response.data.error || "Error inesperado, tente novamente");
+      setError(e.response.data.error || "tente novamente");
     }
     setLoading(false);
   };

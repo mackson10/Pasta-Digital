@@ -35,9 +35,8 @@ export default function Main() {
         const { data } = await api.get(`/folders/${selectedFolder._id}/docs`);
         setDocs(data);
       } catch (e) {
-        setError(e.response.data.error || "Error inesperado, tente novamente");
+        setError(e.response.data.error || "tente novamente");
       }
-
       setLoading(false);
     },
     [selectedFolder._id, setError]
