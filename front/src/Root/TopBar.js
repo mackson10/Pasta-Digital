@@ -54,7 +54,7 @@ export default function TopBar() {
           <>
             <Button
               onClick={() => {
-                localStorage.token = undefined;
+                delete localStorage.token;
                 setUser(null);
               }}
               color="inherit"

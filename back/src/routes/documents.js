@@ -26,6 +26,9 @@ docsRoute.post("/", async function(req, res, next) {
   const folder = user.folders.id(folderId);
   if (!folder) return next({ status: 404, message: "Pasta não encontrada" });
 
+  if (await Document.findOne({ folder: folderId, title }))
+    return next({ status: 400, message: "Arquivo já existe" });
+
   const doc = await Document.create({ title, folder: folderId });
   folder.items.push(doc.id);
   await user.save();

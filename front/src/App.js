@@ -39,7 +39,7 @@ function App() {
       res => res,
       err => {
         if (err.response.status === 401) {
-          localStorage.token = undefined;
+          delete localStorage.token;
           setUser(null);
           setError(err.response.data && err.response.data.error);
         }
