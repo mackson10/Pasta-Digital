@@ -3,26 +3,35 @@ const config = require("../config");
 const User = require("../application/models/User");
 
 async function authMiddleware(req, res, next) {
+  // autenticação em duas chaves
   const authHeader = req.headers["x-auth-token"];
-  if (!authHeader) return next({ status: 401 });
+  const authCookie = req.cookies.cookieToken;
 
-  const token = authHeader;
+  if (!authHeader || !authCookie) return next({ status: 401 });
 
   let userId;
   try {
-    const tokenPayload = await jwt.verify(token, config.jwtPrivateKey);
-    userId = tokenPayload.user._id;
+    const headerPayload = await jwt.verify(authHeader, config.jwtPrivateKey);
+    const cookiePayload = await jwt.verify(authHeader, config.jwtPrivateKey);
+
+    if (
+      !headerPayload ||
+      !headerPayload.headerFragment ||
+      !cookiePayload ||
+      !cookiePayload.cookieFragment ||
+      !headerPayload.user ||
+      !headerPayload.user._id ||
+      headerPayload.user._id !== cookiePayload.user._id
+    )
+      throw new Error();
+
+    userId = headerPayload.user._id;
   } catch (e) {
     return next({ status: 401, message: "Token inválido" });
   }
 
-  try {
-    res.locals.user = await User.findById(userId);
-    return next();
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  res.locals.user = await User.findById(userId);
+  return next();
 }
 
 module.exports = authMiddleware;

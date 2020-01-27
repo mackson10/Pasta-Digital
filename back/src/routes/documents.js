@@ -46,7 +46,7 @@ docsRoute.put("/:id", async function(req, res, next) {
   doc.content = content;
   await doc.save();
   delete doc.content;
-  return res.send(doc); //
+  return res.send(doc);
 });
 
 docsRoute.put("/:id/extract", async function(req, res, next) {
@@ -77,7 +77,7 @@ docsRoute.put("/:id/extract", async function(req, res, next) {
 
   await doc.save();
   delete doc.content;
-  return res.send(doc); //
+  return res.send(doc);
 });
 
 docsRoute.delete("/:id", async function(req, res, next) {
