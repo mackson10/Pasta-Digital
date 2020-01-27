@@ -15,7 +15,7 @@ const app = express();
 const rootRouter = express.Router();
 
 rootRouter.get("/", function(req, res) {
-  res.send({ message: "root" });
+  res.send({ message: "api pasta digital" });
 });
 
 rootRouter.use("/auth", authRoute);
@@ -25,7 +25,6 @@ rootRouter.use("/documents", authMiddleware, documentsRoute);
 app.use(cors());
 app.use(fileUpload());
 app.use(express.json());
-app.use(express.text());
 
 app.use("/api", rootRouter);
 

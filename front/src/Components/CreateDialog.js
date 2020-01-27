@@ -71,9 +71,14 @@ export default function CreateDialog({ handleClose, folder, docs, setDocs }) {
             />
           </Typography>
           <Typography gutterBottom>
-            Extrair texto (.txt/.pdf):
-            <Button component="label" color="primary" variant="contained">
-              Escolher
+            Extrair .txt/.pdf (opcional)
+            <Button
+              style={{ margin: "0 0 0 10px" }}
+              component="label"
+              color="primary"
+              variant="contained"
+            >
+              {file ? "Trocar" : "Escolher"}
               <input
                 id="filetoextract"
                 name="filetoextract"

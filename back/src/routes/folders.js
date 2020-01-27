@@ -13,14 +13,8 @@ foldersRoute.get("/:id", async function(req, res, next) {
   const { requestUser } = res.locals;
   const { id } = req.params;
 
-  let folder;
-  try {
-    const user = await User.findById(requestUser.id).select("+folders.items");
-    folder = user.folders.id(id);
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  const user = await User.findById(requestUser.id).select("+folders.items");
+  const folder = user.folders.id(id);
 
   if (!folder) return next({ status: 404, message: "Pasta não encontrada" });
   return res.send(folder);
@@ -33,13 +27,7 @@ foldersRoute.post("/", async function(req, res, next) {
   if (typeof name !== "string" || name.length === 0)
     return next({ status: 400 });
 
-  let exists;
-  try {
-    exists = await User.exists({ _id: user._id, "folders.name": name });
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  const exists = await User.exists({ _id: user._id, "folders.name": name });
 
   if (exists) {
     return next({
@@ -49,14 +37,8 @@ foldersRoute.post("/", async function(req, res, next) {
   }
 
   user.folders.push({ name });
-
-  try {
-    await user.save();
-    return res.send(user.folders[user.folders.length - 1]);
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  await user.save();
+  return res.send(user.folders[user.folders.length - 1]);
 });
 
 foldersRoute.put("/:id", async function(req, res, next) {
@@ -68,14 +50,8 @@ foldersRoute.put("/:id", async function(req, res, next) {
   if (!folder) return next({ status: 404, message: "Pasta não encontrada" });
 
   folder.name = name;
-
-  try {
-    await user.save();
-    return res.send(user.folders.id(id));
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  await user.save();
+  return res.send(user.folders.id(id));
 });
 
 foldersRoute.delete("/:id", async function(req, res, next) {
@@ -86,13 +62,8 @@ foldersRoute.delete("/:id", async function(req, res, next) {
   if (!folder) return next({ status: 404, message: "Pasta não encontrada" });
 
   const removedFolder = user.folders.id(id).remove();
-  try {
-    await user.save();
-    return res.send(removedFolder);
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  await user.save();
+  return res.send(removedFolder);
 });
 
 foldersRoute.get("/:id/docs", async function(req, res, next) {
@@ -102,13 +73,8 @@ foldersRoute.get("/:id/docs", async function(req, res, next) {
   const folder = user.folders.id(id);
   if (!folder) return next({ status: 404, message: "Pasta não encontrada" });
 
-  try {
-    const docs = await Document.find({ folder: folder.id });
-    return res.send(docs);
-  } catch (e) {
-    console.log(e);
-    return next({ status: 500 });
-  }
+  const docs = await Document.find({ folder: folder.id });
+  return res.send(docs);
 });
 
 module.exports = foldersRoute;

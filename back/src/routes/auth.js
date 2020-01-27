@@ -39,19 +39,14 @@ authRoute.post("/register", async function(req, res, next) {
   if (await User.findOne({ username }))
     return next({ status: 400, message: "Este usuário já existe" });
 
-  try {
-    const user = await User.create({
-      username,
-      name,
-      password,
-      folders: [{ name: "Padrão" }]
-    });
-    user.passwordHash = undefined;
-    return res.send(user);
-  } catch (e) {
-    console.log("Erro ao criar usuário", e);
-    return next({ status: 500 });
-  }
+  const user = await User.create({
+    username,
+    name,
+    password,
+    folders: [{ name: "Padrão" }]
+  });
+  user.passwordHash = undefined;
+  return res.send(user);
 });
 
 authRoute.get("/logged", authMiddleware, async function(req, res, next) {

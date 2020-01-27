@@ -23,7 +23,7 @@ export default function Landing() {
   const submitHandler = async function(e) {
     e.preventDefault();
     try {
-      const { data: registerData } = await api.post("/auth/register", {
+      await api.post("/auth/register", {
         username,
         password,
         name

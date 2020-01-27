@@ -9,12 +9,7 @@ docsRoute.get("/:id", async function(req, res, next) {
   const { user } = res.locals;
   const { id } = req.params;
 
-  let doc;
-  try {
-    doc = await Document.findById(id).select("+content");
-  } catch (e) {
-    next({ status: 500 });
-  }
+  const doc = await Document.findById(id).select("+content");
   if (!doc || !user.folders.id(doc.folder))
     return next({ status: 404, message: "Documento não encontrado" });
 
